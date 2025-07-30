@@ -1,0 +1,9 @@
+apiVersion: vms.example.com/v1alpha1
+kind: VirtualMachine
+metadata:
+  name: my-vm
+  labels:
+    sample-label: "true"
+spec:
+  image: ubuntu
+  subnetID: toronto
