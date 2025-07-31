@@ -21,8 +21,8 @@ spec:
         # build from staging/src/k8s.io/sample-apiserver/artifacts/simple-image/Dockerfile
         # or
         # docker pull registry.k8s.io/e2e-test-images/sample-apiserver:1.17.4
-        # docker tag registry.k8s.io/e2e-test-images/sample-apiserver:1.17.4 kube-sample-apiserver:latest
-        image: flashhhhh/kube-sample-apiserver:latest
+        # docker tag registry.k8s.io/e2e-test-images/sample-apiserver:1.17.4 virtual-machines-apiserver:latest
+        image: flashhhhh/virtual-machines-apiserver:latest
         imagePullPolicy: Always
         args: [ "--etcd-servers=http://localhost:2379" ]
       - name: etcd
