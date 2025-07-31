@@ -22,6 +22,8 @@ limitations under the License.
 package v1alpha1
 
 import (
+	unsafe "unsafe"
+
 	vms "github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/apis/vms"
 	conversion "k8s.io/apimachinery/pkg/conversion"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -153,18 +155,25 @@ func Convert_vms_VirtualMachineList_To_v1alpha1_VirtualMachineList(in *vms.Virtu
 
 func autoConvert_v1alpha1_VirtualMachineSpec_To_vms_VirtualMachineSpec(in *VirtualMachineSpec, out *vms.VirtualMachineSpec, s conversion.Scope) error {
 	out.Image = in.Image
+	out.Size = in.Size
+	out.SSHKeyIDs = *(*[]string)(unsafe.Pointer(&in.SSHKeyIDs))
 	out.SubnetID = in.SubnetID
+	out.SecurityGroupIDs = *(*[]string)(unsafe.Pointer(&in.SecurityGroupIDs))
 	return nil
 }
 
 func autoConvert_vms_VirtualMachineSpec_To_v1alpha1_VirtualMachineSpec(in *vms.VirtualMachineSpec, out *VirtualMachineSpec, s conversion.Scope) error {
 	out.Image = in.Image
+	out.Size = in.Size
+	out.SSHKeyIDs = *(*[]string)(unsafe.Pointer(&in.SSHKeyIDs))
 	out.SubnetID = in.SubnetID
+	out.SecurityGroupIDs = *(*[]string)(unsafe.Pointer(&in.SecurityGroupIDs))
 	return nil
 }
 
 func autoConvert_v1alpha1_VirtualMachineStatus_To_vms_VirtualMachineStatus(in *VirtualMachineStatus, out *vms.VirtualMachineStatus, s conversion.Scope) error {
 	out.Phase = in.Phase
+	out.ID = in.ID
 	out.IP = in.IP
 	return nil
 }
@@ -176,6 +185,7 @@ func Convert_v1alpha1_VirtualMachineStatus_To_vms_VirtualMachineStatus(in *Virtu
 
 func autoConvert_vms_VirtualMachineStatus_To_v1alpha1_VirtualMachineStatus(in *vms.VirtualMachineStatus, out *VirtualMachineStatus, s conversion.Scope) error {
 	out.Phase = in.Phase
+	out.ID = in.ID
 	out.IP = in.IP
 	return nil
 }

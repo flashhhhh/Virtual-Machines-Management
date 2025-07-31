@@ -23,7 +23,7 @@ spec:
         # docker pull registry.k8s.io/e2e-test-images/sample-apiserver:1.17.4
         # docker tag registry.k8s.io/e2e-test-images/sample-apiserver:1.17.4 kube-sample-apiserver:latest
         image: flashhhhh/kube-sample-apiserver:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         args: [ "--etcd-servers=http://localhost:2379" ]
       - name: etcd
         image: gcr.io/etcd-development/etcd:v3.6.1

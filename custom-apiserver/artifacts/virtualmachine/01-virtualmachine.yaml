@@ -5,5 +5,10 @@ metadata:
   labels:
     sample-label: "true"
 spec:
-  image: ubuntu
-  subnetID: toronto
+  image: "ami-0c94855ba95c71c99"
+  size: "t2.micro"
+  sshKeyIDs:
+    - "kp-linux"
+  subnetID: "subnet-080dc7385f0044c14"
+  securityGroupIDs:
+    - "sg-03577d4124c5d53e7"

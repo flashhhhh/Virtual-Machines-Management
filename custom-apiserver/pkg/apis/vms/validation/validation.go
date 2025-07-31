@@ -36,8 +36,10 @@ func ValidateVirtualMachineSpec(s *vms.VirtualMachineSpec, fldPath *field.Path) 
 
 	if s.Image == "" {
 		allErrs = append(allErrs, field.Invalid(fldPath.Child("image"), s.Image, "virtual machine's image is empty"))
-	} else if s.Image != "ubuntu" {
-		allErrs = append(allErrs, field.Invalid(fldPath.Child("image"), s.Image, "virtual machine's image is not supported"))
+	}
+
+	if s.SubnetID == "" {
+		allErrs = append(allErrs, field.Invalid(fldPath.Child("subnetID"), s.SubnetID, "virtual machine's subnet ID is empty"))
 	}
 
 	return allErrs

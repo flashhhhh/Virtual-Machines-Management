@@ -12,13 +12,17 @@ type VirtualMachineList struct {
 }
 
 type VirtualMachineSpec struct {
-	Image	string
-	SubnetID string
+	Image		string
+	Size		string
+	SSHKeyIDs	[]string
+	SubnetID	string
+	SecurityGroupIDs []string
 }
 
 type VirtualMachineStatus struct {
 	Phase	string
-	IP	string
+	ID		string
+	IP		string
 }
 
 // +genclient

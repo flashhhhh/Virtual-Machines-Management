@@ -21,8 +21,11 @@ package v1alpha1
 // VirtualMachineSpecApplyConfiguration represents a declarative configuration of the VirtualMachineSpec type for use
 // with apply.
 type VirtualMachineSpecApplyConfiguration struct {
-	Image    *string `json:"image,omitempty"`
-	SubnetID *string `json:"subnetID,omitempty"`
+	Image            *string  `json:"image,omitempty"`
+	Size             *string  `json:"size,omitempty"`
+	SSHKeyIDs        []string `json:"sshKeyIDs,omitempty"`
+	SubnetID         *string  `json:"subnetID,omitempty"`
+	SecurityGroupIDs []string `json:"securityGroupIDs,omitempty"`
 }
 
 // VirtualMachineSpecApplyConfiguration constructs a declarative configuration of the VirtualMachineSpec type for use with
@@ -39,10 +42,38 @@ func (b *VirtualMachineSpecApplyConfiguration) WithImage(value string) *VirtualM
 	return b
 }
 
+// WithSize sets the Size field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Size field is set to the value of the last call.
+func (b *VirtualMachineSpecApplyConfiguration) WithSize(value string) *VirtualMachineSpecApplyConfiguration {
+	b.Size = &value
+	return b
+}
+
+// WithSSHKeyIDs adds the given value to the SSHKeyIDs field in the declarative configuration
+// and returns the receiver, so that objects can be build by chaining "With" function invocations.
+// If called multiple times, values provided by each call will be appended to the SSHKeyIDs field.
+func (b *VirtualMachineSpecApplyConfiguration) WithSSHKeyIDs(values ...string) *VirtualMachineSpecApplyConfiguration {
+	for i := range values {
+		b.SSHKeyIDs = append(b.SSHKeyIDs, values[i])
+	}
+	return b
+}
+
 // WithSubnetID sets the SubnetID field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the SubnetID field is set to the value of the last call.
 func (b *VirtualMachineSpecApplyConfiguration) WithSubnetID(value string) *VirtualMachineSpecApplyConfiguration {
 	b.SubnetID = &value
+	return b
+}
+
+// WithSecurityGroupIDs adds the given value to the SecurityGroupIDs field in the declarative configuration
+// and returns the receiver, so that objects can be build by chaining "With" function invocations.
+// If called multiple times, values provided by each call will be appended to the SecurityGroupIDs field.
+func (b *VirtualMachineSpecApplyConfiguration) WithSecurityGroupIDs(values ...string) *VirtualMachineSpecApplyConfiguration {
+	for i := range values {
+		b.SecurityGroupIDs = append(b.SecurityGroupIDs, values[i])
+	}
 	return b
 }

@@ -14,13 +14,17 @@ type VirtualMachineList struct {
 }
 
 type VirtualMachineSpec struct {
-	Image 	 string `json:"image,omitempty" protobuf:"bytes,1,opt,name=image"`
-	SubnetID string `json:"subnetID,omitempty" protobuf:"bytes,2,opt,name=subnetID"`
+	Image            string   `json:"image" protobuf:"bytes,1,opt,name=image"`
+	Size             string   `json:"size" protobuf:"bytes,2,opt,name=size"`
+	SSHKeyIDs        []string `json:"sshKeyIDs" protobuf:"bytes,3,rep,name=sshKeyIDs"`
+	SubnetID         string   `json:"subnetID" protobuf:"bytes,4,opt,name=subnetID"`
+	SecurityGroupIDs []string `json:"securityGroupIDs" protobuf:"bytes,5,rep,name=securityGroupIDs"`
 }
 
 type VirtualMachineStatus struct {
 	Phase       string `json:"phase,omitempty" protobuf:"bytes,1,opt,name=phase"`
-	IP          string `json:"ip,omitempty" protobuf:"bytes,2,opt,name=ip"`
+	ID          string `json:"id,omitempty" protobuf:"bytes,2,opt,name=id"`
+	IP          string `json:"ip,omitempty" protobuf:"bytes,3,opt,name=ip"`
 }
 
 // +genclient
