@@ -6,6 +6,7 @@ import (
 
 	vmsregistry "github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/registry"
 	virtualmachinestorage "github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/registry/vms/virtualmachine"
+	virtualmachinestatusstorage "github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/registry/vms/virtualmachine/status"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -88,6 +89,8 @@ func (c CompletedConfig) New() (*VirtualMachineServer, error) {
 
 	v1alpha1storage := map[string]rest.Storage{}
 	v1alpha1storage["virtualmachines"] = vmsregistry.RESTInPeace(virtualmachinestorage.NewREST(Scheme, c.GenericConfig.RESTOptionsGetter))
+	v1alpha1storage["virtualmachines/status"] = vmsregistry.StatusRESTInPeace(virtualmachinestatusstorage.NewStatusREST(Scheme, c.GenericConfig.RESTOptionsGetter))
+
 	apiGroupInfo.VersionedResourcesStorageMap["v1alpha1"] = v1alpha1storage
 
 	if err := server.GenericAPIServer.InstallAPIGroup(&apiGroupInfo); err != nil {

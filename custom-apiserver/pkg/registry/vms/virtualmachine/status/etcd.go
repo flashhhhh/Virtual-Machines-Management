@@ -1,20 +1,4 @@
-/*
-Copyright 2017 The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-package virtualmachine
+package status
 
 import (
 	"github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/apis/vms"
@@ -25,9 +9,9 @@ import (
 	"k8s.io/apiserver/pkg/registry/rest"
 )
 
-// NewREST returns a RESTStorage object that will work against API services.
-func NewREST(scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter) (*registry.REST, error) {
-	strategy := NewStrategy(scheme)
+// NewStatusREST returns a RESTStorage object that will work against API services for status updates.
+func NewStatusREST(scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter) (*registry.StatusREST, error) {
+	strategy := NewStatusStrategy(scheme)
 
 	store := &genericregistry.Store{
 		NewFunc:                   func() runtime.Object { return &vms.VirtualMachine{} },
@@ -40,12 +24,11 @@ func NewREST(scheme *runtime.Scheme, optsGetter generic.RESTOptionsGetter) (*reg
 		UpdateStrategy: strategy,
 		DeleteStrategy: strategy,
 
-		// TODO: define table converter that exposes more than name/creation timestamp
 		TableConvertor: rest.NewDefaultTableConvertor(vms.Resource("virtualmachines")),
 	}
 	options := &generic.StoreOptions{RESTOptions: optsGetter, AttrFunc: GetAttrs}
 	if err := store.CompleteWithOptions(options); err != nil {
 		return nil, err
 	}
-	return &registry.REST{Store: store}, nil
+	return &registry.StatusREST{Store: store}, nil
 }

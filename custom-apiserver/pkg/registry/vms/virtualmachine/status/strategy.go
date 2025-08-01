@@ -14,13 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package virtualmachine
+package status
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/apis/vms/validation"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -30,11 +29,12 @@ import (
 	"k8s.io/apiserver/pkg/storage/names"
 
 	"github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/apis/vms"
+	"github.com/flashhhhh/Virtual-Machines-Management/custom-apiserver/pkg/apis/vms/validation"
 )
 
-// NewStrategy creates and returns a virtualMachineStrategy instance
-func NewStrategy(typer runtime.ObjectTyper) virtualMachineStrategy {
-	return virtualMachineStrategy{typer, names.SimpleNameGenerator}
+// NewStatusStrategy creates and returns a virtualMachineStatusStrategy instance
+func NewStatusStrategy(typer runtime.ObjectTyper) virtualMachineStatusStrategy {
+	return virtualMachineStatusStrategy{typer, names.SimpleNameGenerator}
 }
 
 // GetAttrs returns labels.Set, fields.Set, and error in case the given runtime.Object is not a VirtualMachine
@@ -44,6 +44,11 @@ func GetAttrs(obj runtime.Object) (labels.Set, fields.Set, error) {
 		return nil, nil, fmt.Errorf("given object is not a Virtual Machine")
 	}
 	return labels.Set(apiserver.ObjectMeta.Labels), SelectableFields(apiserver), nil
+}
+
+// SelectableFields returns a field set that represents the object.
+func SelectableFields(obj *vms.VirtualMachine) fields.Set {
+	return generic.ObjectMetaFieldsSet(&obj.ObjectMeta, true)
 }
 
 // MatchVirtualMachine is the filter used by the generic etcd backend to watch events
@@ -56,53 +61,53 @@ func MatchVirtualMachine(label labels.Selector, field fields.Selector) storage.S
 	}
 }
 
-// SelectableFields returns a field set that represents the object.
-func SelectableFields(obj *vms.VirtualMachine) fields.Set {
-	return generic.ObjectMetaFieldsSet(&obj.ObjectMeta, true)
-}
-
-type virtualMachineStrategy struct {
+type virtualMachineStatusStrategy struct {
 	runtime.ObjectTyper
 	names.NameGenerator
 }
 
-func (virtualMachineStrategy) NamespaceScoped() bool {
+func (virtualMachineStatusStrategy) NamespaceScoped() bool {
 	return true
 }
 
-func (virtualMachineStrategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
+func (virtualMachineStatusStrategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 }
 
-func (virtualMachineStrategy) PrepareForUpdate(ctx context.Context, obj, old runtime.Object) {
+func (virtualMachineStatusStrategy) PrepareForUpdate(ctx context.Context, obj, old runtime.Object) {
+	// Only allow updating status — preserve spec
+	newVM := obj.(*vms.VirtualMachine)
+	oldVM := old.(*vms.VirtualMachine)
+
+	newVM.Spec = oldVM.Spec
 }
 
-func (virtualMachineStrategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
-	virtualmachine := obj.(*vms.VirtualMachine)
-	return validation.ValidateVirtualMachine(virtualmachine)
+func (virtualMachineStatusStrategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
+	newVM, ok := obj.(*vms.VirtualMachine)
+	if !ok {
+		return field.ErrorList{field.Invalid(field.NewPath("obj"), obj, "not a VirtualMachine")}
+	}
+	return validation.ValidateVirtualMachine(newVM)
 }
 
-// WarningsOnCreate returns warnings for the creation of the given object.
-func (virtualMachineStrategy) WarningsOnCreate(ctx context.Context, obj runtime.Object) []string {
-	return nil
-}
-
-func (virtualMachineStrategy) AllowCreateOnUpdate() bool {
-	return false
-}
-
-func (virtualMachineStrategy) AllowUnconditionalUpdate() bool {
-	return false
-}
-
-func (virtualMachineStrategy) Canonicalize(obj runtime.Object) {
-}
-
-func (virtualMachineStrategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
+func (virtualMachineStatusStrategy) ValidateUpdate(ctx context.Context, obj, old runtime.Object) field.ErrorList {
 	return field.ErrorList{}
 }
 
-// WarningsOnUpdate returns warnings for the given update.
-func (virtualMachineStrategy) WarningsOnUpdate(ctx context.Context, obj, old runtime.Object) []string {
+// WarningsOnCreate returns warnings for the creation of the given object.
+func (virtualMachineStatusStrategy) WarningsOnCreate(ctx context.Context, obj runtime.Object) []string {
 	return nil
 }
 
+func (virtualMachineStatusStrategy) AllowCreateOnUpdate() bool {
+	return false
+}
+
+func (virtualMachineStatusStrategy) AllowUnconditionalUpdate() bool {
+	return false
+}
+
+func (s virtualMachineStatusStrategy) Canonicalize(obj runtime.Object) {}
+
+func (s virtualMachineStatusStrategy) WarningsOnUpdate(ctx context.Context, obj, old runtime.Object) []string {
+	return nil
+}
