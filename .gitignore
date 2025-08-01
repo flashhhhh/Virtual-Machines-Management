@@ -36,3 +36,4 @@ virtual-machine-management-kubeconfig.yaml
 
 # EC2 IAM credentials
 ec2-iam-credentials.sh
+custom-controller/aws-credentials-secret.yaml

@@ -50,10 +50,14 @@ func (a *AWSProvider) CreateVM(cfg vminterfaces.VirtualMachineConfig) (*vminterf
 		return nil, err
 	}
 	inst := out.Instances[0]
+	ip := ""
+	if inst.PublicIpAddress != nil {
+		ip = *inst.PublicIpAddress
+	}
 
 	return &vminterfaces.VirtualMachine{
-		ID:       *inst.InstanceId,
-		Name:     cfg.Name,
+		ID:	*inst.InstanceId,
+		IP:	ip,
 	}, nil
 }
 
@@ -72,10 +76,14 @@ func (a *AWSProvider) GetVM(id string) (*vminterfaces.VirtualMachine, error) {
 	}
 
 	inst := out.Reservations[0].Instances[0]
+	ip := ""
+	if inst.PublicIpAddress != nil {
+		ip = *inst.PublicIpAddress
+	}
 
 	return &vminterfaces.VirtualMachine{
 		ID:   *inst.InstanceId,
-		Name: *inst.Tags[0].Value,
+		IP:   ip,
 	}, nil
 }
 
@@ -90,4 +98,20 @@ func (a *AWSProvider) DeleteVM(id string) error {
 	}
 
 	return nil
+}
+
+func (a *AWSProvider) GetVMStatus(instanceID string) (string, error) {
+	out, err := a.client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
+		InstanceIds: []string{instanceID},
+	})
+	if err != nil {
+		return "", err
+	}
+
+	if len(out.Reservations) == 0 || len(out.Reservations[0].Instances) == 0 {
+		return "", errors.New("instance not found")
+	}
+
+	state := out.Reservations[0].Instances[0].State.Name
+	return string(state), nil
 }

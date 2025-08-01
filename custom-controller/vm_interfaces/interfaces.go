@@ -10,13 +10,13 @@ type VirtualMachineConfig struct {
 }
 
 type VirtualMachine struct {
-	ID          string
-	Name        string
-	IP          string
+	ID	string
+	IP	string
 }
 
 type VMInterfaces interface {
 	CreateVM(config VirtualMachineConfig) (*VirtualMachine, error)
 	GetVM(id string) (*VirtualMachine, error)
 	DeleteVM(id string) error
+	GetVMStatus(instanceID string) (string, error)
 }

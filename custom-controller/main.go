@@ -16,33 +16,47 @@ func main() {
 		panic(fmt.Sprintf("failed to create AWS provider: %v", err))
 	}
 
-	vmCfg := vminterfaces.VirtualMachineConfig{
-		Name:       "my-virtual-machine",
-		Size:       "t2.micro",
-		Image:      "ami-0c94855ba95c71c99", // For AWS
-		SSHKeyIDs:  []string{"kp-linux"},
-		SecurityGroupIDs: []string{"sg-03577d4124c5d53e7"},
-		SubnetID:   "subnet-080dc7385f0044c14",
+	// vmCfg := vminterfaces.VirtualMachineConfig{
+	// 	Name:       "my-virtual-machine",
+	// 	Size:       "t2.micro",
+	// 	Image:      "ami-0c94855ba95c71c99", // For AWS
+	// 	SSHKeyIDs:  []string{"kp-linux"},
+	// 	SecurityGroupIDs: []string{"sg-03577d4124c5d53e7"},
+	// 	SubnetID:   "subnet-080dc7385f0044c14",
+	// }
+
+	// vm, err := provider.CreateVM(vmCfg)
+	// if err != nil {
+	// 	println("Error creating VM:", err.Error())
+	// }
+
+	// fmt.Printf("Created VM: %+v\n", vm)
+
+	// fetchedVM, err := provider.GetVM(vm.ID)
+	// if err != nil {
+	// 	println("Error fetching VM:", err.Error())
+	// } else {
+	// 	fmt.Printf("Fetched VM: %+v\n", fetchedVM)
+	// }
+
+	// Wait 20 seconds
+	// time.Sleep(20 * time.Second)
+
+	vm := &vminterfaces.VirtualMachine{
+		ID: "i-00146bc6e9eabb0e2", // Example ID
 	}
 
-	vm, err := provider.CreateVM(vmCfg)
+	state, err := provider.GetVMStatus(vm.ID)
 	if err != nil {
-		println("Error creating VM:", err.Error())
-	}
-
-	fmt.Printf("Created VM: %+v\n", vm)
-
-	fetchedVM, err := provider.GetVM(vm.ID)
-	if err != nil {
-		println("Error fetching VM:", err.Error())
+		println("Error getting VM status:", err.Error())
 	} else {
-		fmt.Printf("Fetched VM: %+v\n", fetchedVM)
+		fmt.Printf("VM Status: %s\n", state)
 	}
 
-	err = provider.DeleteVM(vm.ID)
-	if err != nil {
-		println("Error deleting VM:", err.Error())
-	} else {
-		fmt.Println("VM deleted successfully")
-	}
+	// err = provider.DeleteVM(vm.ID)
+	// if err != nil {
+	// 	println("Error deleting VM:", err.Error())
+	// } else {
+	// 	fmt.Println("VM deleted successfully")
+	// }
 }
