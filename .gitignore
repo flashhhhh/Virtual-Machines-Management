@@ -31,6 +31,9 @@ go.work.sum
 # .idea/
 # .vscode/
 
+# Binary custom apiserver
+custom-apiserver/artifacts/simple-image/virtual-machines-apiserver
+
 # Kubeconfig
 virtual-machine-management-kubeconfig.yaml
 

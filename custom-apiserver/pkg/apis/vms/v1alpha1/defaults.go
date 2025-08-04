@@ -13,7 +13,11 @@ func SetDefaults_VirtualMachineSpec(obj *VirtualMachineSpec) {
 	// 	obj.ReferenceType = &t
 	// }
 
-	if (obj.Image == "") {
-		obj.Image = "ubuntu"
+	if obj.Image == "" {
+		obj.Image = "ami-020cba7c55df1f615"
+	}
+
+	if (obj.Size == "") {
+		obj.Size = "t2.micro"
 	}
 }
